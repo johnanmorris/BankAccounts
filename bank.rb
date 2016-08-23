@@ -8,6 +8,7 @@ module Bank
 			unless @balance >= 0
 				raise ArgumentError.new("You can't have an initial negative balance.")
 			end
+			@owner = add_owner
 		end
 
 		def withdraw(amount)
@@ -24,6 +25,20 @@ module Bank
 		def deposit(amount)
 			@balance += amount
 			return @balance
+		end
+	end
+
+	class Owner
+		def initialize(owner_hash)
+			@first_name = owner_hash[:first_name]
+			@last_name = owner_hash[:last_name]
+			@street = owner_hash[:street]
+			@apt = owner_hash[:apt]
+			@city = owner_hash[:city]
+			@state = owner_hash[:state]
+			@country = owner_hash[:country]
+			@zipcode = owner_hash[:zipcode]
+			@birthdate = owner_hash[:birthdate]
 		end
 	end
 end
