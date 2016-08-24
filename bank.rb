@@ -1,14 +1,46 @@
+require 'csv'
+
 module Bank
 	class Account
-		attr_reader :balance
+		attr_reader :id, :balance, :open_date
 
-		def initialize
-			@id = rand(111111111..999999999)
+		def initialize(id, balance, open_date)
+			@id = id
 			@balance = balance
 			@open_date = open_date
 			unless @balance >= 0
 				raise ArgumentError.new("You can't have an initial negative balance.")
 			end
+		end
+
+		def self.all
+			# returns a collection of Account instances,
+			# representing all of the Accounts described
+			#in the CSV. See below for the CSV file specifications
+			accounts = []
+			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/accounts.csv").each do |line|
+				id = line[0].to_i
+				balance = line[1].to_i
+				open_date = line[2]
+				account = Account.new(id, balance, open_date)
+				accounts << account
+			end
+			return accounts
+		end
+
+		def self.find(id)
+			#THIS NEEDS TO USE self.all METHOD!
+			#returns an instance of Account where
+			# the value of the id field in the CSV
+			# matches the passed parameter
+			item = []
+			acct_db = self.all
+			acct_db.each do |account|
+				if account.id == id
+					item << account
+				end
+			end
+			return item
 		end
 
 		def withdraw(amount)
