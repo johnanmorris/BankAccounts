@@ -29,18 +29,15 @@ module Bank
 		end
 
 		def self.find(id)
-			#THIS NEEDS TO USE self.all METHOD!
 			#returns an instance of Account where
 			# the value of the id field in the CSV
 			# matches the passed parameter
-			item = []
 			acct_db = self.all
 			acct_db.each do |account|
 				if account.id == id
-					item << account
+					return account
 				end
 			end
-			return item
 		end
 
 		def withdraw(amount)
@@ -58,33 +55,45 @@ module Bank
 			@balance += amount
 			return @balance
 		end
-		# Note: I got this method to work, if I input the owner_hash
-		# directly, and initialize a hash in the Owner initialize. The
-		# problem comes when I try to add values to the original hash
-		# in the Owner class. I can change a value with, for example,
-		# owner.street = "Street", but it won't update the hash. I think
-		# this is because they're not directly tied? Or maybe because I
-		# initialize the hash, I can't add to it again?
-		# Look again at notes for Classes and Hashes together. How is this
-		# used??
-#		def add_owner(incoming_hash)
-#			@owner = incoming_hash
-#		end
 	end
 
-#	class Owner
-#		attr_accessor :owner_hash, :first_name, :last_name, :street, :apt, :city, :state, :country, :zipcode, :birthdate
-#
-#		def initialize(owner_hash)
-#			@first_name = owner_hash[:first_name]
-#			@last_name = owner_hash[:last_name]
-#			@street = owner_hash[:street]
-#			@apt = owner_hash[:apt]
-#			@city = owner_hash[:city]
-#			@state = owner_hash[:state]
-#			@country = owner_hash[:country]
-#			@zipcode = owner_hash[:zipcode]
-#			@birthdate = owner_hash[:birthdate]
-#		end
-#	end
+	class Owner
+		attr_reader :id, :last_name, :first_name, :street, :city, :state
+
+		def initialize(id, last_name, first_name, street, city, state)
+			@id = id
+			@last_name = last_name
+			@first_name = first_name
+			@street = street
+			@city = city
+			@state = state
+		end
+
+		def self.all
+			owners = []
+			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/owners.csv").each do |line|
+				id = line[0].to_i
+				last_name = line[1]
+				first_name = line[2]
+				street = line[3]
+				city = line[4]
+				state = line[5]
+				owner = Owner.new(id, last_name, first_name, street, city, state)
+				owners << owner
+			end
+			return owners
+		end
+
+		def self.find(id)
+			#returns an instance of Owner where
+			# the value of the id field in the CSV
+			# matches the passed parameter
+			owner_db = self.all
+			owner_db.each do |owner|
+				if owner.id == id
+					return owner
+				end
+			end
+		end
+	end
 end
