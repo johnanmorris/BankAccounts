@@ -3,7 +3,7 @@ require 'csv'
 module Bank
 	class Account
 		attr_reader :id, :balance, :open_date, :owner
-
+# As currently written, this returns nil. why does it return nil?
 		def initialize(id, balance, open_date)
 			@id = id
 			@balance = balance
@@ -11,7 +11,23 @@ module Bank
 			unless @balance >= 0
 				raise ArgumentError.new("You can't have an initial negative balance.")
 			end
-			@owner = add_owner(owner)
+#			@owner = add_owner(owner)
+		end
+
+		def withdraw(amount)
+			if amount <= 0
+				puts "Invalid amount."
+			elsif amount > @balance
+				puts "This withdrawal would cause you to overdraw your account. Transaction denied."
+			else
+				@balance -= amount
+			end
+			return @balance
+		end
+
+		def deposit(amount)
+			@balance += amount
+			return @balance
 		end
 
 		def self.all
@@ -42,8 +58,10 @@ module Bank
 		end
 
 		def self.all_with_owners
+			accounts = self.all
 			account_hash = {}
 
+			# I can't get this to work.
 			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/account_owners.csv").each do |line|
 #				puts "Account id: #{line[0]}"
 #				puts "Owner id : #{line[1]}"
@@ -52,31 +70,15 @@ module Bank
 				account_hash[account_id] = owner_id
 			end
 
-			account_hash.each do |account, owner|
-				a = Account.find(account)
-				a.add_owner(owner)
+			accounts.each do |account|
+				a = account.id
+				puts "Account id : #{a}"
+#				a.add_owner(owner)
 			end
 		end
 
-		def add_owner(owner)
-			@owner = owner
-		end
-
-		def withdraw(amount)
-			if amount <= 0
-				puts "Invalid amount."
-			elsif amount > @balance
-				puts "This withdrawal would cause you to overdraw your account. Transaction denied."
-			else
-				@balance -= amount
-			end
-			return @balance
-		end
-
-		def deposit(amount)
-			@balance += amount
-			return @balance
-		end
+#		def add_owner(owner)
+#		end
 	end
 
 	class Owner
