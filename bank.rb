@@ -2,7 +2,7 @@ require 'csv'
 
 module Bank
 	class Account
-		attr_reader :id, :balance, :open_date
+		attr_reader :id, :balance, :open_date, :owner
 
 		def initialize(id, balance, open_date)
 			@id = id
@@ -11,6 +11,7 @@ module Bank
 			unless @balance >= 0
 				raise ArgumentError.new("You can't have an initial negative balance.")
 			end
+			@owner = add_owner(owner)
 		end
 
 		def self.all
@@ -38,6 +39,27 @@ module Bank
 					return account
 				end
 			end
+		end
+
+		def self.all_with_owners
+			account_hash = {}
+
+			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/account_owners.csv").each do |line|
+#				puts "Account id: #{line[0]}"
+#				puts "Owner id : #{line[1]}"
+				account_id = line[0].to_i
+				owner_id = line[1].to_i
+				account_hash[account_id] = owner_id
+			end
+
+			account_hash.each do |account, owner|
+				a = Account.find(account)
+				a.add_owner(owner)
+			end
+		end
+
+		def add_owner(owner)
+			@owner = owner
 		end
 
 		def withdraw(amount)
