@@ -3,7 +3,7 @@ require 'csv'
 module Bank
 	class Account
 		attr_reader :id, :balance, :open_date, :owner
-# As currently written, this returns nil. why does it return nil?
+
 		def initialize(id, balance, open_date)
 			@id = id
 			@balance = balance
@@ -27,6 +27,7 @@ module Bank
 
 		def deposit(amount)
 			@balance += amount
+			puts "Deposited #{amount}. Balance: #{@balance}"
 			return @balance
 		end
 
@@ -57,26 +58,27 @@ module Bank
 			end
 		end
 
-		def self.all_with_owners
-			accounts = self.all
-			account_hash = {}
-
-			# I can't get this to work.
-			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/account_owners.csv").each do |line|
+# 		I can't get this to work.
+#
+#		def self.all_with_owners
+#			accounts = self.all
+#			account_hash = {}
+#
+#			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/account_owners.csv").each do |line|
 #				puts "Account id: #{line[0]}"
 #				puts "Owner id : #{line[1]}"
-				account_id = line[0].to_i
-				owner_id = line[1].to_i
-				account_hash[account_id] = owner_id
-			end
-
-			accounts.each do |account|
-				a = account.id
-				puts "Account id : #{a}"
+#				account_id = line[0].to_i
+#				owner_id = line[1].to_i
+#				account_hash[account_id] = owner_id
+#			end
+#
+#			accounts.each do |account|
+#				a = account.id
+#				puts "Account id : #{a}"
 #				a.add_owner(owner)
-			end
-		end
-
+#			end
+#		end
+#
 #		def add_owner(owner)
 #		end
 	end
