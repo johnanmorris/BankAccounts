@@ -2,13 +2,14 @@ require 'csv'
 
 module Bank
 	class Account
+#		BALANCE = 0
 		attr_reader :id, :balance, :open_date, :owner
 
 		def initialize(id, balance, open_date)
 			@id = id
 			@balance = balance
 			@open_date = open_date
-			unless @balance >= 0
+			unless @balance >= 0 # >= self.class::BALANCE
 				raise ArgumentError.new("You can't have an initial negative balance.")
 			end
 #			@owner = add_owner(owner)
