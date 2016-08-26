@@ -2,15 +2,15 @@ require 'csv'
 
 module Bank
 	class Account
-#		BALANCE = 0
+		MIN_BALANCE = 0
 		attr_reader :id, :balance, :open_date, :owner
 
 		def initialize(id, balance, open_date)
 			@id = id
 			@balance = balance
 			@open_date = open_date
-			unless @balance >= 0 # >= self.class::BALANCE
-				raise ArgumentError.new("You can't have an initial negative balance.")
+			unless @balance >= self.class::MIN_BALANCE
+				raise ArgumentError.new("Initial balance is too low.")
 			end
 #			@owner = add_owner(owner)
 		end
@@ -18,17 +18,18 @@ module Bank
 		def withdraw(amount)
 			if amount <= 0
 				puts "Invalid amount."
-			elsif amount > @balance
-				puts "This withdrawal would cause you to overdraw your account. Transaction denied."
 			else
 				@balance -= amount
+				if @balance < self.class::MIN_BALANCE
+					puts "Transaction denied. This would bring you below the minimum balance for this account."
+					@balance += amount
+				end
 			end
 			return @balance
 		end
 
 		def deposit(amount)
 			@balance += amount
-			puts "Deposited #{amount}. Balance: #{@balance}"
 			return @balance
 		end
 
@@ -60,6 +61,8 @@ module Bank
 		end
 
 # 		I can't get this to work.
+#		Note to self: change local variable name from owner to
+#		something else -- attr_reader are affecting this!
 #
 #		def self.all_with_owners
 #			accounts = self.all
@@ -116,9 +119,9 @@ module Bank
 			# the value of the id field in the CSV
 			# matches the passed parameter
 			owner_db = self.all
-			owner_db.each do |owner|
+			owner_db.each do |acct_owner|
 				if owner.id == id
-					return owner
+					return acct_owner
 				end
 			end
 		end

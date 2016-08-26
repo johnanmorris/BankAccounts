@@ -7,12 +7,15 @@ class CheckingAccount < Bank::Account
 	end
 
 	def withdraw(amount)
-		amount += 100
+		if amount > 0
+			amount += 100
+		end
 		super(amount)
 	end
 
 	def withdraw_using_check(amount)
 		fee = 200
+
 		if amount <= 0
 			puts "Invalid amount."
 		elsif @balance <= -1000 || @balance - amount < -1000 || @balance - amount - fee < -1000
@@ -28,7 +31,6 @@ class CheckingAccount < Bank::Account
 	end
 
 	def reset_checks
-		puts "Checks reset!"
 		@checks = 0
 	end
 end
