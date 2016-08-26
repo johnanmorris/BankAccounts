@@ -7,7 +7,7 @@ class CheckingAccount < Bank::Account
 	end
 
 	def withdraw(amount)
-		if amount >= 0
+		if amount > 0
 			amount += 100
 		end
 		super(amount)
