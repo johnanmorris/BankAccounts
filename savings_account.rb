@@ -8,7 +8,7 @@ class SavingsAccount < Bank::Account
 	end
 
 	def withdraw(amount)
-		if amount > 0
+		if amount >= 0
 			amount += 200
 		end
 		super(amount)

@@ -36,7 +36,7 @@ module Bank
 		def self.all
 			# returns a collection of Account instances,
 			# representing all of the Accounts described
-			#in the CSV. See below for the CSV file specifications
+			# in the CSV.
 			accounts = []
 			CSV.read("/users/johnamorris/ada/project-forks/BankAccounts/support/accounts.csv").each do |line|
 				id = line[0].to_i
@@ -48,13 +48,13 @@ module Bank
 			return accounts
 		end
 
-		def self.find(id)
+		def self.find(csv_id)
 			#returns an instance of Account where
 			# the value of the id field in the CSV
 			# matches the passed parameter
 			acct_db = self.all
 			acct_db.each do |account|
-				if account.id == id
+				if account.id == csv_id
 					return account
 				end
 			end
